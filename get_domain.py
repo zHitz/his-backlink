@@ -31,6 +31,7 @@ with open('search_results.txt', 'w', encoding='utf-8') as file:
     for keyword in search_keywords:
         
         print(keyword)
+        time.sleep(5)
         # Tìm kiếm keyword
         search_box = driver.find_element(By.NAME, 'q')
         search_box.clear()
