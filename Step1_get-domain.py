@@ -24,7 +24,7 @@ driver.maximize_window()
 unique_domains = set()
 
 # Mở tệp tin để ghi kết quả
-with open('search_results.txt', 'w', encoding='utf-8') as file:
+with open('domain_results.txt', 'w', encoding='utf-8') as file:
     # Mở trang Google
     driver.get('https://www.google.com')
     exclude_domain = 'casino site:*.tphcm.gov.vn'
@@ -61,7 +61,7 @@ with open('search_results.txt', 'w', encoding='utf-8') as file:
                     parsed_url = urlparse(url)
                     domain = parsed_url.netloc
                     if domain not in unique_domains:
-                        file.write(f'Domain: {domain}\n')
+                        file.write(f'{domain}\n')
                         unique_domains.add(domain)
                         exclude_domain += f' -site:{domain}'
                     num_results += 1
@@ -93,3 +93,4 @@ with open('search_results.txt', 'w', encoding='utf-8') as file:
 print(search_keywords)
 # Đóng trình duyệt
 driver.quit()
+
