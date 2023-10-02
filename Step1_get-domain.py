@@ -4,8 +4,7 @@ import time
 from urllib.parse import urlparse
 
 # Danh sách các từ khoá bạn muốn tìm kiếm
-# search_keywords = ['casino site:*.tphcm.gov.vn', 'sổ xố site:*.tphcm.gov.vn', 'lô đề site:*.tphcm.gov.vn', 'sex site:*.tphcm.gov.vn', 'đánh bài site:*.tphcm.gov.vn']
-search_keywords = ['lô đề site:*.tphcm.gov.vn']
+search_keywords = ['intext:"lô đề" | intext:"nổ hũ" | intext:"casino" | intext:"sex" | intext:"bắn cá" site:*.tphcm.gov.vn | site:*.hochiminhcity.gov.vn']
 # Set the download directory
 options = webdriver.ChromeOptions()
 options.add_argument('--ignore-certificate-errors')  # Ignore SSL certificate errors
@@ -20,6 +19,7 @@ options.add_argument('--disable-download-notification')
 
 driver = webdriver.Chrome(options=options)
 driver.maximize_window()
+time.sleep(5)
 # Tạo một tập hợp để lưu các domain đã ghi
 unique_domains = set()
 
@@ -27,11 +27,11 @@ unique_domains = set()
 with open('domain_results.txt', 'w', encoding='utf-8') as file:
     # Mở trang Google
     driver.get('https://www.google.com')
-    exclude_domain = 'casino site:*.tphcm.gov.vn'
+    exclude_domain = 'intext:"lô đề" | intext:"nổ hũ" | intext:"casino" | intext:"sex" | intext:"bắn cá" site:*.tphcm.gov.vn | site:*.hochiminhcity.gov.vn'
     for keyword in search_keywords:
         
         print(keyword)
-        time.sleep(5)
+        time.sleep(20)
         # Tìm kiếm keyword
         search_box = driver.find_element(By.NAME, 'q')
         search_box.clear()

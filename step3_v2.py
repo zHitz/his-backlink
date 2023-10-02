@@ -4,7 +4,7 @@ import pandas as pd
 from fake_useragent import UserAgent
 
 # Thư mục chứa các thư mục con chứa các file txt và kết quả
-base_dir = 'E:/Lab/his-backlink/domain'
+base_dir = 'domain'
 
 # Tạo một bảng để lưu trữ kết quả chung
 results_chung = []
@@ -22,17 +22,22 @@ for folder in os.listdir(base_dir):
             lines = file.readlines()
             title = ''
             url = ''
+            des = ''
             for line in lines:
                 line = line.strip()
                 if line.startswith("Title:"):
                     title = line.split("Title:")[1].strip()
                 elif line.startswith("URL:"):
                     url = line.split("URL:")[1].strip()
+                    
+                elif line.startswith("Descrition:"):
+                    url = line.split("Descrition:")[1].strip()
                 elif line == '------------------------------':
                     if url:
-                        urls.append({'Title Search': title, 'URL': url})
+                        urls.append({'Title Search': title, 'URL': url, 'Mô tả': des})
                     title = ''
                     url = ''
+                    des = ''
 
         # Kiểm tra mỗi URL
         for url_info in urls:
