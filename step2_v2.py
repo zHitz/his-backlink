@@ -68,7 +68,7 @@ for keyword in search_keywords:
                     file.write(f'Number: {num_results}\n')
                     file.write(f'Title: {title}\n')
                     file.write(f'URL: {url}\n')
-                    file.write(f"Mô tả: {description}\n")
+                    file.write(f"Description: {description}\n")
                     file.write('-' * 30 + '\n')
                     num_results += 1
                 except Exception as e:
