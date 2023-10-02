@@ -5,7 +5,7 @@ from urllib.parse import urlparse
 
 # Danh sách các từ khoá bạn muốn tìm kiếm
 # search_keywords = ['casino site:*.tphcm.gov.vn', 'sổ xố site:*.tphcm.gov.vn', 'lô đề site:*.tphcm.gov.vn', 'sex site:*.tphcm.gov.vn', 'đánh bài site:*.tphcm.gov.vn']
-search_keywords = ['casino site:*.tphcm.gov.vn']
+search_keywords = ['lô đề site:*.tphcm.gov.vn']
 # Set the download directory
 options = webdriver.ChromeOptions()
 options.add_argument('--ignore-certificate-errors')  # Ignore SSL certificate errors
