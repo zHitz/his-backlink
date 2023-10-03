@@ -1,6 +1,0 @@
-Domain: gdnn.tphcm.gov.vn
-Domain: duongdaynong.tphcm.gov.vn
-Domain: tcip.tphcm.gov.vn
-Domain: vanphonghvcb.tphcm.gov.vn
-Domain: ubnd.tphcm.gov.vn
-Domain: ppp.tphcm.gov.vn

@@ -1,0 +1,7 @@
+requests
+selenium
+pandas
+openpyxl
+urlparser
+fake_useragent
+chromium-chromedriver

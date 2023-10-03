@@ -2,9 +2,10 @@ import os
 import requests
 import pandas as pd
 from fake_useragent import UserAgent
+import mimetypes
 
 # Thư mục chứa các thư mục con chứa các file txt và kết quả
-base_dir = 'domain'
+base_dir = './domain'
 
 # Tạo một bảng để lưu trữ kết quả chung
 results_chung = []
@@ -30,25 +31,32 @@ for folder in os.listdir(base_dir):
                 elif line.startswith("URL:"):
                     url = line.split("URL:")[1].strip()
                     
-                elif line.startswith("Descrition:"):
-                    url = line.split("Descrition:")[1].strip()
+                elif line.startswith("Description:"):
+                    des = line.split("Description:")[1].strip()
                 elif line == '------------------------------':
                     if url:
-                        urls.append({'Title Search': title, 'URL': url, 'Mô tả': des})
+                        urls.append({'Title Search': title, 'URL': url, 'Description': des})
                     title = ''
                     url = ''
                     des = ''
 
-        # Kiểm tra mỗi URL
+        # Lặp qua các URL và kiểm tra
         for url_info in urls:
             url = url_info['URL']
             try:
-                # Tạo tiêu đề User-Agent ngẫu nhiên cho yêu cầu
-                headers = {'User-Agent': ua.random}
+                # Tạo tiêu đề User-Agent ngẫu nhiên và thêm tiêu đề Authorization
+                headers = {
+                    'User-Agent': ua.random,
+                    'Referer': 'https://www.google.com/'
+                }
                 print(f"Đang truy cập {url} :")
                 response = requests.head(url, headers=headers, timeout=5)
                 if response.status_code == 200:
                     status = 'Còn tồn tại'
+                elif response.status_code == 404:
+                    status = 'Not found'
+                elif response.status_code == 500:
+                    status = 'Không tồn tại trên Server'
                 else:
                     status = 'Đã bị chặn'
                 print(status)
@@ -59,13 +67,31 @@ for folder in os.listdir(base_dir):
                 status = 'Hết thời gian chờ'
                 print(status)
 
+            # Kiểm tra đuôi URL nếu là pdf thì thêm cột "Phương thức" với giá trị "Upload Files"
+            url_extension = os.path.splitext(url_info['URL'])[1].lower()
+            if url_extension == ".pdf" or url_extension == '.doc':
+                url_info['Phương thức'] = 'Upload Files'
+            elif status == 'Not found':
+                checksites = requests.get(url, headers=headers, timeout=5)
+                if '</script>' in checksites.text:
+                    url_info['Phương thức'] = 'Referrer Sites'
+                else:
+                    url_info['Phương thức'] = None
+            elif status == 'Còn tồn tại' and ('gopy' in url.lower() or 'gop_y' in url.lower() or 'hoidap' in url.lower() or 'hoi_dap' in url.lower()):
+                url_info['Phương thức'] = 'Upload Form'
+
+            else:
+                url_info['Phương thức'] = None
+
             results_chung.append({
                 'Domain': folder,
                 'Title Search': url_info['Title Search'],
                 'URL': url_info['URL'],
-                'Status': status
+                'Mô tả': url_info['Description'],
+                'Status': status,
+                'Phương thức': url_info['Phương thức']
             })
-
+            
         # Tạo DataFrame từ kết quả cho từng domain và lưu nó vào tệp Excel
         df_domain = pd.DataFrame(results_chung)
         domain_excel_file = os.path.join(folder_path, 'results.xlsx')
