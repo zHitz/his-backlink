@@ -27,7 +27,7 @@ unique_domains = set()
 with open('domain_results.txt', 'w', encoding='utf-8') as file:
     for keyword in search_keywords:
         # Tạo URL tìm kiếm trên Google
-        search_url = f'https://www.google.co.in/search?q={keyword.replace(" ", "+")}'
+        search_url = f'https://www.google.com/search?q={keyword.replace(" ", "%20")}&as_qdr=d1'
         print(search_url)
         time.sleep(60)
         driver.get(search_url)

@@ -39,7 +39,7 @@ try:
             # Mở tệp tin để ghi kết quả
             with open(os.path.join(keyword_folder, 'search_results.txt'), 'w', encoding='utf-8') as file:
                 keyword = f'intext:"lô đề" | intext:"nổ hũ" | intext:"casino" | intext:"sex" | intext:"bắn cá" site:{keyword}'
-                search_url = f'https://www.google.co.in/search?q={keyword.replace(" ", "%20")}'
+                search_url = f'https://www.google.com/search?q={keyword.replace(" ", "%20")}&as_qdr=d1'
                 print(search_url)
                 driver.get(search_url)
                 time.sleep(20)
