@@ -13,6 +13,10 @@ results_chung = []
 # Tạo một đối tượng UserAgent để tạo User-Agent ngẫu nhiên
 ua = UserAgent()
 
+proxy_ip = "proxy_ip"  # Thay thế bằng địa chỉ IP proxy thực tế
+proxy_port = "proxy_port"  # Thay thế bằng cổng proxy thực tế
+
+
 # Lặp qua các thư mục con trong thư mục cơ sở
 for folder in os.listdir(base_dir):
     folder_path = os.path.join(base_dir, folder)
@@ -49,8 +53,12 @@ for folder in os.listdir(base_dir):
                     'User-Agent': ua.random,
                     'Referer': 'https://www.google.com/'
                 }
+                proxies = {
+                    "http": f"http://{proxy_ip}:{proxy_port}",
+                    "https": f"http://{proxy_ip}:{proxy_port}",
+                }
                 print(f"Đang truy cập {url} :")
-                response = requests.head(url, headers=headers, timeout=5)
+                response = requests.head(url, headers=headers, proxies=proxies, timeout=5)
                 if response.status_code == 200:
                     status = 'Còn tồn tại'
                 elif response.status_code == 404:
@@ -72,7 +80,7 @@ for folder in os.listdir(base_dir):
             if url_extension == ".pdf" or url_extension == '.doc':
                 url_info['Phương thức'] = 'Upload Files'
             elif status == 'Not found':
-                checksites = requests.get(url, headers=headers, timeout=5)
+                checksites = requests.get(url, headers=headers, proxies=proxies, timeout=5)
                 if '</script>' in checksites.text:
                     url_info['Phương thức'] = 'Referrer Sites'
                 else:
