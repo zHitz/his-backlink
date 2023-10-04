@@ -6,9 +6,9 @@ from urllib.parse import urlparse
 
 
 # Định cấu hình proxy
-proxy = Proxy()
-proxy.proxy_type = ProxyType.MANUAL
-proxy.http_proxy = "proxy_ip:proxy_port"
+# proxy = Proxy()
+# proxy.proxy_type = ProxyType.MANUAL
+# proxy.http_proxy = "proxy_ip:proxy_port"
 
 # Danh sách các từ khoá bạn muốn tìm kiếm
 search_keywords = ['intext:"lô đề" | intext:"nổ hũ" | intext:"casino" | intext:"sex" | intext:"bắn cá" site:*.tphcm.gov.vn | site:*.hochiminhcity.gov.vn']
@@ -23,7 +23,7 @@ options.add_argument('--disable-gpu')
 options.add_argument('--remote-debugging-port=9222')
 options.add_argument('--disable-popup-blocking')
 options.add_argument('--disable-download-notification')
-options.add_argument('--proxy-server=http://proxy_ip:proxy_port')
+# options.add_argument('--proxy-server=http://proxy_ip:proxy_port')
 options.binary_location = "/usr/bin/chromium-browser"
 
 driver = webdriver.Chrome(options=options)

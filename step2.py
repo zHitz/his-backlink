@@ -15,10 +15,10 @@ try:
         with open('domain_results.txt', 'r', encoding='utf-8') as keyword_file:
             search_keywords = keyword_file.read().splitlines()
             
-        # Định cấu hình proxy
-        proxy = Proxy()
-        proxy.proxy_type = ProxyType.MANUAL
-        proxy.http_proxy = "proxy_ip:proxy_port"
+        # # Định cấu hình proxy
+        # proxy = Proxy()
+        # proxy.proxy_type = ProxyType.MANUAL
+        # proxy.http_proxy = "proxy_ip:proxy_port"
         
         # Cấu hình trình duyệt
         options = webdriver.ChromeOptions()
@@ -29,7 +29,7 @@ try:
         options.add_argument('--disable-download-notification')
         options.add_argument("--headless")  # Chạy ẩn danh (không hiển thị giao diện)
         options.add_argument("--no-sandbox")  # Chạy không có sandbox        
-        options.add_argument('--proxy-server=http://proxy_ip:proxy_port')
+        # options.add_argument('--proxy-server=http://proxy_ip:proxy_port')
         options.binary_location = "/usr/bin/chromium-browser"     
 
         driver = webdriver.Chrome(options=options)
