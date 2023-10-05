@@ -1,14 +1,9 @@
 from selenium import webdriver
-from selenium.webdriver.common.proxy import Proxy, ProxyType
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 import time
 from urllib.parse import urlparse
-
-
-# Định cấu hình proxy
-# proxy = Proxy()
-# proxy.proxy_type = ProxyType.MANUAL
-# proxy.http_proxy = "proxy_ip:proxy_port"
+import pickle
 
 # Danh sách các từ khoá bạn muốn tìm kiếm
 search_keywords = ['intext:"lô đề" | intext:"nổ hũ" | intext:"casino" | intext:"sex" | intext:"bắn cá" site:*.tphcm.gov.vn | site:*.hochiminhcity.gov.vn']
@@ -19,27 +14,41 @@ options.add_argument('--ignore-ssl-errors')  # Ignore SSL errors
 options.add_argument('--no-sandbox')
 options.add_argument('--disable-dev-shm-usage')
 options.add_argument('--headless=new')
+# options.add_argument("user-data-dir=selenium")
 options.add_argument('--disable-gpu')
-options.add_argument('--remote-debugging-port=9222')
+# options.add_argument('--remote-debugging-port=9222')
 options.add_argument('--disable-popup-blocking')
 options.add_argument('--disable-download-notification')
-# options.add_argument('--proxy-server=http://proxy_ip:proxy_port')
-options.binary_location = "/usr/bin/chromium-browser"
+# options.add_argument('proxy-server=202.78.224.217:8132')
+#For ChromeDriver version 79.0.3945.16 or over
+options.add_argument('--disable-blink-features=AutomationControlled')
+# options.add_argument("window-size=1280,800")
+# options.binary_location = "/usr/bin/chromium-browser"
 
 driver = webdriver.Chrome(options=options)
-# driver.maximize_window()
+driver.maximize_window()
 # Tạo một tập hợp để lưu các domain đã ghi
 unique_domains = set()
+domain_count = 0
+# Mở trang Google
+driver.get("http://www.google.com")
+pickle.dump(driver.get_cookies(), open("cookies.pkl","wb"))
 
 # Mở tệp tin để ghi kết quả
 with open('domain_results.txt', 'w', encoding='utf-8') as file:
     for keyword in search_keywords:
         # Tạo URL tìm kiếm trên Google
-        search_url = f'https://www.google.com/search?q={keyword.replace(" ", "%20")}&as_qdr=d1'
-        print(search_url)
-        time.sleep(60)
-        driver.get(search_url)
+        # search_url = f'https://www.google.co.in/search?q={keyword.replace(" ", "%20")}'
+        # print(search_url)
+        # time.sleep(60)
+        # driver.get(search_url)
+        
+        # Tìm kiếm keyword
         time.sleep(5)
+        search_box = driver.find_element(By.NAME, 'q')
+        search_box.send_keys(keyword)
+        search_box.send_keys(Keys.RETURN)
+        time.sleep(60)
         # Chờ cho trang tải
         driver.implicitly_wait(10)  # Chờ tối đa 10 giây cho trang tải
         
@@ -69,6 +78,7 @@ with open('domain_results.txt', 'w', encoding='utf-8') as file:
                         unique_domains.add(domain)
                         exclude_domain += f' -site:{domain}'
                         no_more_domain = False
+                        domain_count += 1
                     num_results += 1
                 except Exception as e:
                     print(f"Error: {str(e)}")
@@ -91,7 +101,7 @@ with open('domain_results.txt', 'w', encoding='utf-8') as file:
                 no_scroll = True
                 break
             previous_scroll_y = current_scroll_y
-        if no_scroll == True and  num_results <= max_results and no_more_domain == True:
+        if (no_scroll == True and  num_results <= max_results and no_more_domain == True) or (domain_count >= 5):
             print('TH1')
             time.sleep(10)
             break
