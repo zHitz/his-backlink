@@ -11,6 +11,17 @@ def is_domain_file_valid(file_path):
 
 unique_urls = set()
 domain = ''
+
+# Xóa file trước khi thực thi
+file_path = 'search_results.txt'
+
+# kiểm tra file xóa
+if os.path.exists(file_path):
+    os.remove(file_path)
+    print(f"{file_path} has been deleted.")
+else:
+    print(f"{file_path} does not exist.")
+
 try:
     # Đọc tập hợp từ tệp Python khác (nếu tệp tồn tại)
     with open("list_urls.pkl", "rb") as file:
@@ -20,7 +31,7 @@ except FileNotFoundError:
     list_urls = set()
 try:
     # Kiểm tra và chạy code nếu tệp "domain_results.txt" hợp lệ
-    if is_domain_file_valid('c.txt'):
+    if is_domain_file_valid('domain_results.txt'):
         # Đọc danh sách từ khoá từ tệp "domain_results.txt"
         with open('domain_results.txt', 'r', encoding='utf-8') as keyword_file:
             search_keywords = keyword_file.read().splitlines()
@@ -38,9 +49,9 @@ try:
         options.add_argument('--disable-blink-features=AutomationControlled')
         options.add_argument("window-size=1280,800")
         # options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36")
-        # options.add_argument("--headless")  # Chạy ẩn danh (không hiển thị giao diện)
-        # options.add_argument("--no-sandbox")  # Chạy không có sandbox        
-        # options.binary_location = "/usr/bin/chromium-browser"
+        options.add_argument("--headless")  # Chạy ẩn danh (không hiển thị giao diện)
+        options.add_argument("--no-sandbox")  # Chạy không có sandbox        
+        options.binary_location = "/usr/bin/chromium-browser"
         
 
         driver = webdriver.Chrome(options=options)
@@ -55,12 +66,12 @@ try:
         # Tạo thư mục để lưu kết quả
         for keyword in search_keywords:
             # Mở tệp tin để ghi kết quả
-            with open('search_results.txt', 'w', encoding='utf-8') as file:
+            with open('search_results.txt', 'a', encoding='utf-8') as file:
                 domain = keyword
-                keyword = f'"lô đề" | "nổ hũ" | "casino" | "sex" | "gambling" | "football" site:{keyword}'
+                keyword = f'"roulette" | "nổ hũ" | intext:"casino" | "sex" | "soi-keo" | "gambling" site:{keyword}'
                 search_url = f'https://www.google.co.in/search?q={keyword.replace(" ", "%20")}'
                 print(keyword)
-                time.sleep(10)
+                time.sleep(240)
                 driver.get(search_url)
                 # # Tìm kiếm keyword
                 # search_box = driver.find_element(By.NAME, 'q')

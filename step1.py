@@ -6,7 +6,7 @@ from urllib.parse import urlparse
 import pickle
 
 # Danh sách các từ khoá bạn muốn tìm kiếm
-search_keywords = ['intext:"lô đề" | intext:"nổ hũ" | intext:"casino" | intext:"sex" | intext:"bắn cá" site:*.tphcm.gov.vn | site:*.hochiminhcity.gov.vn']
+search_keywords = ['"roulette" | "nổ hũ" | intext:"casino" | "sex" | "soi-keo" | "gambling" site:*.tphcm.gov.vn | site:*.hochiminhcity.gov.vn']
 # Set the download directory
 options = webdriver.ChromeOptions()
 options.add_argument('--ignore-certificate-errors')  # Ignore SSL certificate errors
@@ -23,7 +23,7 @@ options.add_argument('--disable-download-notification')
 #For ChromeDriver version 79.0.3945.16 or over
 options.add_argument('--disable-blink-features=AutomationControlled')
 # options.add_argument("window-size=1280,800")
-# options.binary_location = "/usr/bin/chromium-browser"
+options.binary_location = "/usr/bin/chromium-browser"
 
 driver = webdriver.Chrome(options=options)
 driver.maximize_window()
@@ -48,7 +48,7 @@ with open('domain_results.txt', 'w', encoding='utf-8') as file:
         search_box = driver.find_element(By.NAME, 'q')
         search_box.send_keys(keyword)
         search_box.send_keys(Keys.RETURN)
-        time.sleep(60)
+        time.sleep(120)
         # Chờ cho trang tải
         driver.implicitly_wait(10)  # Chờ tối đa 10 giây cho trang tải
         
