@@ -12,27 +12,17 @@ def is_domain_file_valid(file_path):
 unique_urls = set()
 domain = ''
 
-# Xóa file trước khi thực thi
 file_path = 'search_results.txt'
 
-# kiểm tra file xóa
 if os.path.exists(file_path):
     os.remove(file_path)
-    print(f"{file_path} has been deleted.")
-else:
-    print(f"{file_path} does not exist.")
-
 try:
-    # Đọc tập hợp từ tệp Python khác (nếu tệp tồn tại)
     with open("list_urls.pkl", "rb") as file:
         list_urls = pickle.load(file)
 except FileNotFoundError:
-    # Nếu tệp không tồn tại, tạo một tập hợp mới
     list_urls = set()
 try:
-    # Kiểm tra và chạy code nếu tệp "domain_results.txt" hợp lệ
     if is_domain_file_valid('domain_results.txt'):
-        # Đọc danh sách từ khoá từ tệp "domain_results.txt"
         with open('domain_results.txt', 'r', encoding='utf-8') as keyword_file:
             search_keywords = keyword_file.read().splitlines()
 
@@ -40,15 +30,10 @@ try:
         options = webdriver.ChromeOptions()
         options.add_argument('--ignore-certificate-errors')
         options.add_argument('--ignore-ssl-errors')
-        # options.add_argument('--remote-debugging-port=9222')
         options.add_argument('--disable-popup-blocking')
         options.add_argument('--disable-download-notification')
-        # options.add_argument("user-data-dir=selenium")
-        # options.add_argument('proxy-server=202.78.224.217:8132')
-        # For ChromeDriver version 79.0.3945.16 or over
         options.add_argument('--disable-blink-features=AutomationControlled')
         options.add_argument("window-size=1280,800")
-        # options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36")
         options.add_argument("--headless")  # Chạy ẩn danh (không hiển thị giao diện)
         options.add_argument("--no-sandbox")  # Chạy không có sandbox        
         options.binary_location = "/usr/bin/chromium-browser"
@@ -56,29 +41,18 @@ try:
 
         driver = webdriver.Chrome(options=options)
         driver.maximize_window()
-        #Remove navigator.webdriver Flag using JavaScript
         driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
 
         base_folder = './domain'
         
-        # # Mở trang Google
-        # driver.get("http://www.google.com")
-        # Tạo thư mục để lưu kết quả
         for keyword in search_keywords:
-            # Mở tệp tin để ghi kết quả
             with open('search_results.txt', 'a', encoding='utf-8') as file:
                 domain = keyword
                 keyword = f'"roulette" | "nổ hũ" | intext:"casino" | "sex" | "soi-keo" | "gambling" site:{keyword}'
                 search_url = f'https://www.google.co.in/search?q={keyword.replace(" ", "%20")}'
-                print(keyword)
                 time.sleep(240)
                 driver.get(search_url)
-                # # Tìm kiếm keyword
-                # search_box = driver.find_element(By.NAME, 'q')
-                # search_box.send_keys(keyword)
-                # search_box.send_keys(Keys.RETURN)
                 time.sleep(20)
-                
                 driver.implicitly_wait(10)
                 num_results = 0
                 max_results = 100
@@ -121,8 +95,6 @@ try:
 except Exception as ex:
     print(f"Lỗi hệ thống: {str(ex)}")
 
-# Chuyển tập hợp thành danh sách
 list_urls.update(unique_urls)
-# Lưu tập hợp đã được cập nhật vào tệp Python khác
 with open("list_urls.pkl", "wb") as file:
     pickle.dump(list_urls, file)
