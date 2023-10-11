@@ -44,7 +44,6 @@ try:
         options.add_argument('--disable-popup-blocking')
         options.add_argument('--disable-download-notification')
         # options.add_argument("user-data-dir=selenium")
-        # options.add_argument('proxy-server=202.78.224.217:8132')
         # For ChromeDriver version 79.0.3945.16 or over
         options.add_argument('--disable-blink-features=AutomationControlled')
         options.add_argument("window-size=1280,800")
