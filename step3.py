@@ -4,12 +4,14 @@ import pandas as pd
 from fake_useragent import UserAgent
 import datetime
 
-base_dir = './domain'
+# Đường dẫn tới thư mục /his-backlink/
+base_directory = os.path.abspath("/his-backlink/")
+
 results_chung = []
 ua = UserAgent()
 urls = []
 
-with open('search_results.txt', 'r', encoding='utf-8') as file:
+with open(os.path.join(base_directory, 'search_results.txt'), 'r', encoding='utf-8') as file:
     lines = file.readlines()
     url_info = {}
     
@@ -82,4 +84,4 @@ df_chung = pd.DataFrame(results_chung)
 current_date = datetime.datetime.now().strftime('%Y-%m-%d')
 
 excel_chung_file = f'results_backlink_{current_date}.xlsx'
-df_chung.to_excel(excel_chung_file, index=False)
+df_chung.to_excel(os.path.join(base_directory, f"{excel_chung_file}"), index=False)

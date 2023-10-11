@@ -9,21 +9,28 @@ import pickle
 def is_domain_file_valid(file_path):
     return os.path.isfile(file_path) and os.path.getsize(file_path) > 0
 
+# Đường dẫn tới thư mục /his-backlink/
+base_directory = os.path.abspath("/his-backlink/")
+
+with open(os.path.join(base_directory, "search_keyword.txt"), "r", encoding='utf-8') as file:
+    search = file.read()
+
 unique_urls = set()
 domain = ''
 
-file_path = 'search_results.txt'
+# Đường dẫn tới tệp search_results.txt trong thư mục /his-backlink/
+file_path = os.path.join(base_directory, 'search_results.txt')
 
 if os.path.exists(file_path):
     os.remove(file_path)
 try:
-    with open("list_urls.pkl", "rb") as file:
+    with open(os.path.join(base_directory, "list_urls.pkl"), "rb") as file:
         list_urls = pickle.load(file)
 except FileNotFoundError:
     list_urls = set()
 try:
-    if is_domain_file_valid('domain_results.txt'):
-        with open('domain_results.txt', 'r', encoding='utf-8') as keyword_file:
+    if is_domain_file_valid(os.path.join(base_directory, 'domain_results.txt')):
+        with open(os.path.join(base_directory, 'domain_results.txt'), 'r', encoding='utf-8') as keyword_file:
             search_keywords = keyword_file.read().splitlines()
 
         # Cấu hình trình duyệt
@@ -42,13 +49,11 @@ try:
         driver = webdriver.Chrome(options=options)
         driver.maximize_window()
         driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
-
-        base_folder = './domain'
         
         for keyword in search_keywords:
-            with open('search_results.txt', 'a', encoding='utf-8') as file:
+            with open(file_path, 'a', encoding='utf-8') as file:
                 domain = keyword
-                keyword = f'"roulette" | "nổ hũ" | intext:"casino" | "sex" | "soi-keo" | "gambling" site:{keyword}'
+                keyword = f'{search} site:{keyword}'
                 search_url = f'https://www.google.co.in/search?q={keyword.replace(" ", "%20")}'
                 time.sleep(240)
                 driver.get(search_url)
@@ -96,5 +101,5 @@ except Exception as ex:
     print(f"Lỗi hệ thống: {str(ex)}")
 
 list_urls.update(unique_urls)
-with open("list_urls.pkl", "wb") as file:
+with open(os.path.join(base_directory, "list_urls.pkl"), "wb") as file:
     pickle.dump(list_urls, file)
