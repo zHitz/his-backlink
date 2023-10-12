@@ -78,7 +78,7 @@ for url_info in urls:
             url_info['Phương thức'] = 'Redirect Backlink'
         else:
             url_info['Phương thức'] = None
-    elif status == 'Còn tồn tại' and any(keyword in url.lower() for keyword in ['gopy', 'gop_y', 'gop-y', 'hoidap', 'hoi_dap']):
+    elif status == 'URL còn tồn tại' and any(keyword in url.lower() for keyword in ['gopy', 'gop_y', 'gop-y', 'hoidap', 'hoi_dap']):
         url_info['Phương thức'] = 'Upload Form'
     else:
         url_info['Phương thức'] = None

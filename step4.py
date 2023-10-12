@@ -10,7 +10,7 @@ logging.basicConfig(filename=log_file, level=logging.DEBUG, format='%(asctime)s 
 logging.info('------------------------------')
 logging.info('Bắt đầu Step 4')
 # Tạo đường dẫn đến thư mục /his-backlink/
-base_directory = os.path.abspath("/his-backlink/")
+base_directory = os.path.abspath("./")
 
 # Mở file Excel
 current_date = datetime.datetime.now().strftime('%Y-%m-%d')
@@ -60,7 +60,7 @@ for column in range(2, 5):  # Cột B đến D là cột từ 2 đến 4
 # Tìm và định dạng các ô trong cột 5
 for row in sheet.iter_rows(min_row=2, max_row=sheet.max_row, min_col=5, max_col=5):
     for cell in row:
-        if cell.value == "Còn tồn tại":
+        if cell.value == "URL còn tồn tại":
             cell.style = "Bad"  # Đặt kiểu 'bad'
             cell.font = Font(bold=True, color="9C0006")  # In đậm với màu 9C0006
         elif cell.value in ["Error 404 Not found", "Đã bị chặn", "Không tồn tại trên Server"]:
