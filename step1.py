@@ -21,10 +21,10 @@ if not os.path.exists(base_directory):
     os.makedirs(base_directory)
 
 # Danh sách chứa các ký tự
-danh_sach_ky_tu = ['casino', 'sex', 'kqxs', 'porn', 'soi keo', 'football', 'nổ hũ','roulette', 'gambling']  # Thêm các ký tự còn lại vào danh sách
+danh_sach_ky_tu = ['casino', 'sex', 'kqxs', 'porn', 'soi kèo', 'soi keo', 'football', 'nổ hũ','roulette', 'gambling', 'crypto', 'eth', 'soxo', 'bongda', 'tài xỉu', 'nhà cái']  # Thêm các ký tự còn lại vào danh sách
 gg_dork = ['', 'intext:']
 # Số lượng ký tự bạn muốn lấy ngẫu nhiên
-so_luong_ky_tu = random.randint(1, len(danh_sach_ky_tu))  # Lấy một số ngẫu nhiên từ 1 đến độ dài của danh sách
+so_luong_ky_tu = random.randint(1, 5)  # Lấy một số ngẫu nhiên từ 1 đến độ dài của danh sách
 # Lấy ký tự ngẫu nhiên
 ky_tu_ngau_nhiens = random.sample(danh_sach_ky_tu, so_luong_ky_tu)
 search = ''
@@ -33,7 +33,7 @@ for kitu in ky_tu_ngau_nhiens:
     random_intext = random.sample(gg_dork, 1)
     search = search + f'| {random_intext[0]}"{kitu}" '
 
-search_keywords = [f"{search} + 'site:tphcm.gov.vn | site:*.hochiminhcity.gov.vn'"]
+search_keywords = [f"{search} site:tphcm.gov.vn | site:*.hochiminhcity.gov.vn"]
 logging.info(f'Tạo thành công random keyword :{search}')
 
 # Lưu giá trị "search" vào tệp
