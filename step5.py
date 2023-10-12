@@ -4,7 +4,8 @@ import os
 import logging
 
 # Cấu hình logging
-log_file = 'logs-backlink.log'
+current_date = datetime.datetime.now().strftime('%Y-%m-%d')
+log_file = f'/his-backlink/logs/logs_backlink_{current_date}.log'
 logging.basicConfig(filename=log_file, level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', encoding='utf-8')
 logging.info('------------------------------')
 logging.info('Bắt đầu Step 5')
@@ -27,9 +28,6 @@ chat_id = 'Chat-ID'
 # Use your channel thread ID
 message_thread_id = 'Thread-ID'
 message = f'<b>Query: </b>\n<i>{search} site:tphcm.gov.vn | site:*.hochiminhcity.gov.vn</i>\n<b> Domain chứa Backlink: </b>\n{domain_content}'
-
-# Lấy ngày hiện tại dưới định dạng yyyy-mm-dd
-current_date = datetime.datetime.now().strftime('%Y-%m-%d')
 
 # Lưu DataFrame chung vào tệp Excel chung với mã hóa UTF-8
 file_excel_path = os.path.join(base_directory, f'results_backlink_{current_date}.xlsx')

@@ -4,8 +4,10 @@ from openpyxl.utils import get_column_letter
 import datetime
 import os
 import logging
+
 # Cấu hình logging
-log_file = 'logs-backlink.log'
+current_date = datetime.datetime.now().strftime('%Y-%m-%d')
+log_file = f'/his-backlink/logs/logs_backlink_{current_date}.log'
 logging.basicConfig(filename=log_file, level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', encoding='utf-8')
 logging.info('------------------------------')
 logging.info('Bắt đầu Step 4')
@@ -13,7 +15,6 @@ logging.info('Bắt đầu Step 4')
 base_directory = os.path.abspath("./")
 
 # Mở file Excel
-current_date = datetime.datetime.now().strftime('%Y-%m-%d')
 file_path = os.path.join(base_directory, f'results_backlink_{current_date}.xlsx')
 print(file_path)
 workbook = openpyxl.load_workbook(file_path)

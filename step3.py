@@ -6,7 +6,8 @@ import datetime
 import logging
 
 # Cấu hình logging
-log_file = 'logs-backlink.log'
+current_date = datetime.datetime.now().strftime('%Y-%m-%d')
+log_file = f'/his-backlink/logs/logs_backlink_{current_date}.log'
 logging.basicConfig(filename=log_file, level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', encoding='utf-8')
 logging.info('------------------------------')
 logging.info('Bắt đầu Step 3')
@@ -93,8 +94,6 @@ for url_info in urls:
     })
 
 df_chung = pd.DataFrame(results_chung)
-
-current_date = datetime.datetime.now().strftime('%Y-%m-%d')
 
 excel_chung_file = f'results_backlink_{current_date}.xlsx'
 
