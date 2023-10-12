@@ -1,10 +1,20 @@
 import datetime
 import requests
 import os
+import logging
 
+# Cấu hình logging
+log_file = 'logs-backlink.log'
+logging.basicConfig(filename=log_file, level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', encoding='utf-8')
+logging.info('------------------------------')
+logging.info('Bắt đầu Step 5')
 
-# Tạo đường dẫn đến thư mục /his-backlink/
+# Đường dẫn tới thư mục /his-backlink/
 base_directory = os.path.abspath("/his-backlink/")
+logging.info('Đọc keyword từ file search_keyword.txt')
+with open(os.path.join(base_directory, 'search_keyword.txt'), 'r', encoding='utf-8') as file:
+    search = file.read()
+
 
 # Read the content of domain.txt file and set it as the caption
 with open(os.path.join(base_directory,'domain_results.txt'), 'r') as file:
@@ -16,7 +26,7 @@ api_token = 'APi-Key'
 chat_id = 'Chat-ID'  
 # Use your channel thread ID
 message_thread_id = 'Thread-ID'
-message = f'<b> Domain chứa Backlink: </b>\n{domain_content}'
+message = f'<b>Query: </b>\n<i>{search} site:tphcm.gov.vn | site:*.hochiminhcity.gov.vn</i>\n<b> Domain chứa Backlink: </b>\n{domain_content}'
 
 # Lấy ngày hiện tại dưới định dạng yyyy-mm-dd
 current_date = datetime.datetime.now().strftime('%Y-%m-%d')

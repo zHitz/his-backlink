@@ -13,6 +13,7 @@ if python3 "$step1_script"; then
         if python3 "$step3_script"; then
             if python3 "$step4_script"; then
                 python3 "$step5_script"
+            fi
         fi
     fi
 fi

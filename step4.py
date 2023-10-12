@@ -3,7 +3,12 @@ from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
 from openpyxl.utils import get_column_letter
 import datetime
 import os
-
+import logging
+# Cấu hình logging
+log_file = 'logs-backlink.log'
+logging.basicConfig(filename=log_file, level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', encoding='utf-8')
+logging.info('------------------------------')
+logging.info('Bắt đầu Step 4')
 # Tạo đường dẫn đến thư mục /his-backlink/
 base_directory = os.path.abspath("/his-backlink/")
 
@@ -15,7 +20,7 @@ workbook = openpyxl.load_workbook(file_path)
 
 # Chọn sheet cần làm việc
 sheet = workbook.active
-
+logging.info('Chỉnh sửa format file excel')
 # Định dạng dòng 1 từ cột A đến F
 for column in range(1, 7):  # Cột A đến F là cột từ 1 đến 6
     cell = sheet.cell(row=1, column=column)
@@ -69,7 +74,7 @@ for row in sheet.iter_rows(min_row=2, max_row=sheet.max_row, min_col=3, max_col=
     for cell in row:
         cell.font = Font(italic=True, color="0000FF")  # Chuyển sang kiểu italic và màu xanh như màu của đường link
 
-
+logging.info('Lưu và đóng file Excel')
 # Lưu file Excel sau khi đã thay đổi
 workbook.save(file_path)
 

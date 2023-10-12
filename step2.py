@@ -4,15 +4,21 @@ from selenium.webdriver.common.keys import Keys
 import time
 import os
 import pickle
+import logging
 
+# Cấu hình logging
+log_file = 'logs-backlink.log'
+logging.basicConfig(filename=log_file, level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', encoding='utf-8')
+logging.info('------------------------------')
+logging.info('Bắt đầu Step 2')
 # Kiểm tra xem tệp "domain_results.txt" có tồn tại và không rỗng không
 def is_domain_file_valid(file_path):
     return os.path.isfile(file_path) and os.path.getsize(file_path) > 0
 
 # Đường dẫn tới thư mục /his-backlink/
 base_directory = os.path.abspath("/his-backlink/")
-
-with open(os.path.join(base_directory, "search_keyword.txt"), "r", encoding='utf-8') as file:
+logging.info('Đọc keyword từ file search_keyword.txt')
+with open(os.path.join(base_directory, 'search_keyword.txt'), 'r', encoding='utf-8') as file:
     search = file.read()
 
 unique_urls = set()
@@ -23,8 +29,9 @@ file_path = os.path.join(base_directory, 'search_results.txt')
 
 if os.path.exists(file_path):
     os.remove(file_path)
+    logging.info('Xóa file search_reuslts.txt cũ')
 try:
-    with open(os.path.join(base_directory, "list_urls.pkl"), "rb") as file:
+    with open(os.path.join(base_directory, 'list_urls.pkl'), 'rb') as file:
         list_urls = pickle.load(file)
 except FileNotFoundError:
     list_urls = set()
@@ -32,7 +39,7 @@ try:
     if is_domain_file_valid(os.path.join(base_directory, 'domain_results.txt')):
         with open(os.path.join(base_directory, 'domain_results.txt'), 'r', encoding='utf-8') as keyword_file:
             search_keywords = keyword_file.read().splitlines()
-
+        logging.info('Đọc file domain_results.txt')
         # Cấu hình trình duyệt
         options = webdriver.ChromeOptions()
         options.add_argument('--ignore-certificate-errors')
@@ -47,6 +54,7 @@ try:
         
 
         driver = webdriver.Chrome(options=options)
+        logging.info('Đã mở Chrome')
         driver.maximize_window()
         driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
         
@@ -54,6 +62,7 @@ try:
             with open(file_path, 'a', encoding='utf-8') as file:
                 domain = keyword
                 keyword = f'{search} site:{keyword}'
+                logging.info(f'Tìm kiếm keyword: {keyword} trên Chrome (Google)')
                 search_url = f'https://www.google.co.in/search?q={keyword.replace(" ", "%20")}'
                 time.sleep(240)
                 driver.get(search_url)
@@ -63,6 +72,7 @@ try:
                 max_results = 100
                 scroll_pause_time = 3
                 previous_scroll_y = driver.execute_script('return window.scrollY')
+                logging.info('Bắt đầu kiểm tra kết quả tìm kiếm')
                 while num_results < max_results:
                     search_results = driver.find_elements(By.CSS_SELECTOR, 'div.g')
                     for result in search_results:
@@ -79,7 +89,7 @@ try:
                                 file.write('-' * 30 + '\n')
                             num_results += 1
                         except Exception as e:
-                            print(f"Error: {str(e)}")
+                            logging.error(f" {str(e)}")
 
                     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
                     time.sleep(scroll_pause_time)
@@ -93,13 +103,16 @@ try:
                     if current_scroll_y == previous_scroll_y:
                         no_scroll = True
                         break
-                    previous_scroll_y = current_scroll_y        
+                    previous_scroll_y = current_scroll_y     
+                logging.info('Đã thỏa điều kiện, dừng tìm kiếm')   
         driver.quit()
+        logging.info('Đóng Chrome')   
     else:
-        print("Tệp 'domain_results.txt' không hợp lệ hoặc không tồn tại.")
+        logging.error("Tệp 'domain_results.txt' không hợp lệ hoặc không tồn tại.")
 except Exception as ex:
-    print(f"Lỗi hệ thống: {str(ex)}")
+    logging.error(f"Lỗi hệ thống: {str(ex)}")
 
 list_urls.update(unique_urls)
 with open(os.path.join(base_directory, "list_urls.pkl"), "wb") as file:
     pickle.dump(list_urls, file)
+logging.info('lưu kết quả tìm kiếm vào list_urls.pkl')   
