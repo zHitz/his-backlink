@@ -12,7 +12,7 @@ logging.basicConfig(filename=log_file, level=logging.DEBUG, format='%(asctime)s 
 logging.info('------------------------------')
 logging.info('Bắt đầu Step 4')
 # Tạo đường dẫn đến thư mục /his-backlink/
-base_directory = os.path.abspath("./")
+base_directory = os.path.abspath("/his-backlink/")
 
 # Mở file Excel
 file_path = os.path.join(base_directory, f'results_backlink_{current_date}.xlsx')

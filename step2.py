@@ -61,6 +61,7 @@ try:
         driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
         
         for keyword in search_keywords:
+            print(keyword)
             with open(file_path, 'a', encoding='utf-8') as file:
                 domain = keyword
                 keyword = f'{search} site:{keyword}'
@@ -72,7 +73,7 @@ try:
                 driver.implicitly_wait(10)
                 num_results = 0
                 max_results = 100
-                scroll_pause_time = 3
+                scroll_pause_time = 2
                 previous_scroll_y = driver.execute_script('return window.scrollY')
                 logging.info('Bắt đầu kiểm tra kết quả tìm kiếm')
                 while num_results < max_results:
@@ -82,7 +83,7 @@ try:
                             title = result.find_element(By.CSS_SELECTOR, 'h3').text
                             url = result.find_element(By.CSS_SELECTOR, 'a').get_attribute('href')
                             description = result.find_element(By.XPATH, './/div[@style="-webkit-line-clamp:2"]').text
-                            if url not in unique_urls and url not in list_urls:
+                            if url not in unique_urls: # and url not in list_urls:
                                 unique_urls.add(url)
                                 file.write(f'Domain: {domain}\n')
                                 file.write(f'Title: {title}\n')
@@ -115,6 +116,6 @@ except Exception as ex:
     logging.error(f"Lỗi hệ thống: {str(ex)}")
 
 list_urls.update(unique_urls)
-with open(os.path.join(base_directory, "list_urls.pkl"), "wb") as file:
-    pickle.dump(list_urls, file)
+# with open(os.path.join(base_directory, "list_urls.pkl"), "wb") as file:
+#     pickle.dump(list_urls, file)
 logging.info('lưu kết quả tìm kiếm vào list_urls.pkl')   

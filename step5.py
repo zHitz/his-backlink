@@ -12,9 +12,6 @@ logging.info('Bắt đầu Step 5')
 
 # Đường dẫn tới thư mục /his-backlink/
 base_directory = os.path.abspath("/his-backlink/")
-logging.info('Đọc keyword từ file search_keyword.txt')
-with open(os.path.join(base_directory, 'search_keyword.txt'), 'r', encoding='utf-8') as file:
-    search = file.read()
 
 
 # Read the content of domain.txt file and set it as the caption
@@ -27,7 +24,7 @@ api_token = 'APi-Key'
 chat_id = 'Chat-ID'  
 # Use your channel thread ID
 message_thread_id = 'Thread-ID'
-message = f'<b>Query: </b>\n<i>{search} site:tphcm.gov.vn | site:*.hochiminhcity.gov.vn</i>\n<b> Domain chứa Backlink: </b>\n{domain_content}'
+message = f'<b> Domain chứa Backlink: </b>\n{domain_content}'
 
 # Lưu DataFrame chung vào tệp Excel chung với mã hóa UTF-8
 file_excel_path = os.path.join(base_directory, f'results_backlink_{current_date}.xlsx')

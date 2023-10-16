@@ -13,7 +13,7 @@ logging.info('------------------------------')
 logging.info('Bắt đầu Step 3')
 
 # Đường dẫn tới thư mục /his-backlink/
-base_directory = os.path.abspath("./")
+base_directory = os.path.abspath("/his-backlink/")
 
 results_chung = []
 ua = UserAgent()
