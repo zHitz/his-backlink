@@ -59,6 +59,8 @@ try:
         logging.info('Đã mở Chrome')
         driver.maximize_window()
         driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+        driver.get("http://www.google.com")
+        
         
         for keyword in search_keywords:
             print(keyword)
@@ -66,11 +68,16 @@ try:
                 domain = keyword
                 keyword = f'{search} site:{keyword}'
                 logging.info(f'Tìm kiếm keyword: {keyword} trên Chrome (Google)')
-                search_url = f'https://www.google.co.in/search?q={keyword.replace(" ", "%20")}'
+                # search_url = f'https://www.google.co.in/search?q={keyword.replace(" ", "%20")}'
+                
+                time.sleep(5)
+                search_box = driver.find_element(By.NAME, 'q')
+                search_box.send_keys(keyword)
+                search_box.send_keys(Keys.RETURN)
+                logging.info(f'Tìm kiếm keyword: {keyword} trên Chrome (Google)')
                 time.sleep(240)
-                driver.get(search_url)
-                time.sleep(20)
                 driver.implicitly_wait(10)
+                
                 num_results = 0
                 max_results = 100
                 scroll_pause_time = 2
