@@ -1,0 +1,2 @@
+0    6       *       *       *       /his-backlink/schedule.sh >> /var/log/backlink.log
+0    18       *       *       *       /his-backlink/schedule.sh >> /var/log/backlink.log

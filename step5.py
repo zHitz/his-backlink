@@ -1,0 +1,62 @@
+import datetime
+import requests
+import os
+import logging
+
+# Cấu hình logging
+current_date = datetime.datetime.now().strftime('%Y-%m-%d')
+log_file = f'/his-backlink/logs/logs_backlink_{current_date}.log'
+logging.basicConfig(filename=log_file, level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', encoding='utf-8')
+logging.info('------------------------------')
+logging.info('Bắt đầu Step 5')
+
+# Đường dẫn tới thư mục /his-backlink/
+base_directory = os.path.abspath("/his-backlink/")
+
+# Read the content of domain.txt file and set it as the caption
+with open(os.path.join(base_directory,'domain_results.txt'), 'r') as file:
+    domain_content = file.read()
+
+# Replace 'YOUR_API_TOKEN' with your actual Telegram Bot API token
+api_token = '5730563947:AAGCUmNjCD3FZdeUXVAmM0xmaMoaJbDEBbk'
+# Use your channel chat ID
+chat_id = '-1001794143884'  
+# Use your channel thread ID
+message_thread_id = '13257'
+message = f'<b> Domain chứa Backlink: </b>\n{domain_content}'
+
+# Lưu DataFrame chung vào tệp Excel chung với mã hóa UTF-8
+file_excel_path = os.path.join(base_directory, f'results_backlink_{current_date}.xlsx')
+
+# Create the message data
+data = {
+    'chat_id': chat_id,
+    'text': message,
+    'message_thread_id': message_thread_id,
+    'parse_mode': 'HTML'
+}
+
+data_doc = {
+    'caption': 'File chứa Backlink',
+    'message_thread_id': message_thread_id,
+}
+
+files = {
+    'document': open(f'{file_excel_path}', 'rb'),
+}
+
+# Send the message using the Telegram Bot API
+url_chat = f'https://api.telegram.org/bot{api_token}/sendMessage'
+response_chat = requests.post(url_chat, data=data)
+
+url_doc = f'https://api.telegram.org/bot{api_token}/sendDocument?chat_id={chat_id}'
+response_doc = requests.post(url_doc, data=data_doc, files=files)
+
+#import subprocess
+
+# Đường dẫn đến tập tin Python mà bạn muốn chạy
+#step6_location = "/his-backlink/step6.py"
+
+# Sử dụng subprocess để chạy tập tin Python khác
+#subprocess.run(["python3", step6_location])
+

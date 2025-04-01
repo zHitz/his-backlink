@@ -4,75 +4,112 @@ from selenium.webdriver.common.keys import Keys
 import time
 from urllib.parse import urlparse
 import pickle
+import random
+import os
+import logging
+import datetime
 
-# Danh sách các từ khoá bạn muốn tìm kiếm
-search_keywords = ['"roulette" | "nổ hũ" | intext:"casino" | "sex" | "soi-keo" | "gambling" site:*.tphcm.gov.vn | site:*.hochiminhcity.gov.vn']
-# Set the download directory
+# Tắt log debug của Selenium
+selenium_logger = logging.getLogger('selenium')
+selenium_logger.setLevel(logging.WARNING)  # Đặt mức độ log cho Selenium là WARNING hoặc cao hơn
+
+# Cấu hình logging
+current_date = datetime.datetime.now().strftime('%Y-%m-%d')
+log_file = f'/his-backlink/logs/logs_backlink_{current_date}.log'
+logging.basicConfig(filename=log_file, level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', encoding='utf-8')
+logging.info('------------------------------')
+logging.info('Bắt đầu Step 1')
+
+# Tạo đường dẫn đến thư mục /his-backlink/
+base_directory = os.path.abspath("/his-backlink/")
+
+# Kiểm tra xem thư mục đã tồn tại chưa, nếu không tồn tại thì tạo mới
+if not os.path.exists(base_directory):
+    os.makedirs(base_directory)
+
+# Danh sách chứa các ký tự
+danh_sach_ky_tu = ['sex', 'kqxs', 'porn', 'soi kèo', 'soi keo', 'football', 'nổ hũ','roulette', 'gambling', 'eth', 'soxo', 'bongda', 'tài xỉu', 'nhà cái']  # Thêm các ký tự còn lại vào danh sách
+gg_dork = ['intext:']
+# Số lượng ký tự bạn muốn lấy ngẫu nhiên
+so_luong_ky_tu = random.randint(1, 5)  # Lấy một số ngẫu nhiên từ 1 đến độ dài của danh sách
+# Lấy ký tự ngẫu nhiên
+ky_tu_ngau_nhiens = random.sample(danh_sach_ky_tu, so_luong_ky_tu)
+search = ''
+
+# Lưu keyword để xứ lí ở step3:
+with open('keywords_list.txt', 'w', encoding='utf-8') as file:
+    # Viết từng phần tử của data_list vào file
+    for keyword in ky_tu_ngau_nhiens:
+        file.write(f'{keyword}\n')
+
+# In ra kết quả
+for kitu in ky_tu_ngau_nhiens:
+    random_intext = random.sample(gg_dork, 1)
+    search = search + f'| {random_intext[0]}"{kitu}" '
+
+search_keywords = [f"{search} site:tphcm.gov.vn | site:hochiminhcity.gov.vn | site:hcmcpv.org.vn | site:thanhuytphcm.vn"]
+logging.info(f'Tạo thành công random keyword :{search}')
+
+# Lưu giá trị "search" vào tệp
+with open(os.path.join(base_directory, 'search_keyword.txt'), 'w', encoding='utf-8') as file:
+    file.write(search)
+
 options = webdriver.ChromeOptions()
-options.add_argument('--ignore-certificate-errors')  # Ignore SSL certificate errors
-options.add_argument('--ignore-ssl-errors')  # Ignore SSL errors
+options.add_argument('--ignore-certificate-errors')
+options.add_argument('--ignore-ssl-errors')
 options.add_argument('--no-sandbox')
 options.add_argument('--disable-dev-shm-usage')
 options.add_argument('--headless=new')
-# options.add_argument("user-data-dir=selenium")
 options.add_argument('--disable-gpu')
-# options.add_argument('--remote-debugging-port=9222')
 options.add_argument('--disable-popup-blocking')
 options.add_argument('--disable-download-notification')
-#For ChromeDriver version 79.0.3945.16 or over
 options.add_argument('--disable-blink-features=AutomationControlled')
-# options.add_argument("window-size=1280,800")
 options.binary_location = "/usr/bin/chromium-browser"
 
+# Sử dụng đường dẫn tới thư mục /his-backlink/ để lưu cookies
+cookies_path = os.path.join(base_directory, "cookies.pkl")
+
 driver = webdriver.Chrome(options=options)
+logging.info('Đã mở Chrome')
 driver.maximize_window()
-# Tạo một tập hợp để lưu các domain đã ghi
+
 unique_domains = set()
 domain_count = 0
-# Mở trang Google
-driver.get("http://www.google.com")
-pickle.dump(driver.get_cookies(), open("cookies.pkl","wb"))
 
-# Mở tệp tin để ghi kết quả
-with open('domain_results.txt', 'w', encoding='utf-8') as file:
+driver.get("http://www.google.com")
+
+# Sử dụng đường dẫn tới thư mục /his-backlink/ để lưu cookies
+pickle.dump(driver.get_cookies(), open(cookies_path, "wb"))
+
+with open(os.path.join(base_directory, 'domain_results.txt'), 'w', encoding='utf-8') as file:
     for keyword in search_keywords:
-        # Tạo URL tìm kiếm trên Google
-        # search_url = f'https://www.google.co.in/search?q={keyword.replace(" ", "%20")}'
-        # print(search_url)
-        # time.sleep(60)
-        # driver.get(search_url)
-        
-        # Tìm kiếm keyword
+
         time.sleep(5)
         search_box = driver.find_element(By.NAME, 'q')
         search_box.send_keys(keyword)
         search_box.send_keys(Keys.RETURN)
+        logging.info(f'Tìm kiếm keyword: {keyword} trên Chrome (Google)')
         time.sleep(120)
-        # Chờ cho trang tải
-        driver.implicitly_wait(10)  # Chờ tối đa 10 giây cho trang tải
+        driver.implicitly_wait(10)
         
-        # Lấy các kết quả
-        max_results = 100  # Số kết quả tối đa bạn muốn lấy
+        max_results = 100 
         num_results = 0
-        scroll_pause_time = 2  # Thời gian chờ giữa mỗi lần cuộn trang (giây)
-        
-        # Đánh dấu vị trí hiện tại
+        scroll_pause_time = 2
         previous_scroll_y = driver.execute_script('return window.scrollY')
-        print(f'previous_scroll: {previous_scroll_y}')
-        
-        # Tạo keyword cho lần chạy tiếp theo
         exclude_domain = keyword
-        print('exclude_domain')
         no_more_domain = True
+        logging.info('Bắt đầu kiểm tra kết quả tìm kiếm')
         while num_results < max_results:
             search_results = driver.find_elements(By.CSS_SELECTOR, 'div.g')
-
             for result in search_results:
                 try:
                     url = result.find_element(By.CSS_SELECTOR, 'a').get_attribute('href')
+                    print(url)
                     parsed_url = urlparse(url)
                     domain = parsed_url.netloc
+                    print(domain)
                     if domain not in unique_domains:
+                        logging.info(f'Đã tìm thấy domain mới: {domain}, bắt đầu ghi kết quả vào file domain_results.txt')
                         file.write(f'{domain}\n')
                         unique_domains.add(domain)
                         exclude_domain += f' -site:{domain}'
@@ -80,34 +117,27 @@ with open('domain_results.txt', 'w', encoding='utf-8') as file:
                         domain_count += 1
                     num_results += 1
                 except Exception as e:
-                    print(f"Error: {str(e)}")
+                    logging.error(f" {str(e)}")
 
-            # Cuộn trang web xuống
             driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            
-            # Chờ cho trang tải thêm dữ liệu
             time.sleep(scroll_pause_time)
-
             no_scroll = False
             
-            # Kiểm tra xem đã đạt được số kết quả tối đa chưa
             if num_results >= max_results:
                 break
-            # Kiểm tra xem đã cuộn xuống cuối trang chưa
             current_scroll_y = driver.execute_script('return window.scrollY')
-            print(f'current_scroll: {current_scroll_y}')
             if current_scroll_y == previous_scroll_y:
                 no_scroll = True
                 break
             previous_scroll_y = current_scroll_y
         if (no_scroll == True and  num_results <= max_results and no_more_domain == True) or (domain_count >= 5):
-            print('TH1')
             time.sleep(10)
+            logging.info('Đã thỏa điều kiện, dừng tìm kiếm')
             break
         else:
-            print('append_search_keyword')
             search_keywords.append(exclude_domain)
-print(search_keywords)
+
 # Đóng trình duyệt
 driver.quit()
+logging.info('Đóng trình duyệt')
 
